@@ -1,10 +1,29 @@
 # go-basic-http
 ## run webworker
-```go
+```sh
+go mod tidy
 go run ./cmd/main.go
 ```
 
+## make some curl requests
+```sh
+curl localhost:8080 -u 007
+```
+>**Note**:  
+>The root path `/` (hello world REST API) is the only one with a full trace.
+
+```sh
+curl localhost:8080/greet/luke%20skywalker -u 007
+```
+
+```sh
+curl localhost:8080/slug/777 -u 007
+```
+
+>**Note**:  
+>The password is `123` for basic auth.
+
 ## run tests
-```go
+```sh
 go test ./...
 ```
