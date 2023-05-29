@@ -3,7 +3,6 @@ package http
 import (
 	"io"
 	"net/http"
-	nethttp "net/http"
 	"net/http/httptest"
 	"testing"
 
@@ -12,7 +11,7 @@ import (
 
 func Test_middleware_route(t *testing.T) {
 	testCases := map[string]struct {
-		modifyRequest func(req *nethttp.Request)
+		modifyRequest func(req *http.Request)
 		method        string
 		path          string
 		routes        bool
@@ -23,7 +22,7 @@ func Test_middleware_route(t *testing.T) {
 	}{
 		"ok": {
 			method: http.MethodGet,
-			modifyRequest: func(req *nethttp.Request) {
+			modifyRequest: func(req *http.Request) {
 				req.SetBasicAuth("007", "123")
 			},
 			path:          "/foo",
@@ -32,7 +31,7 @@ func Test_middleware_route(t *testing.T) {
 		},
 		"method not allowed": {
 			method: http.MethodPut,
-			modifyRequest: func(req *nethttp.Request) {
+			modifyRequest: func(req *http.Request) {
 				req.SetBasicAuth("007", "123")
 			},
 			path:          "/foo",
@@ -42,7 +41,7 @@ func Test_middleware_route(t *testing.T) {
 		},
 		"empty routes -> page not found": {
 			method: http.MethodPut,
-			modifyRequest: func(req *nethttp.Request) {
+			modifyRequest: func(req *http.Request) {
 				req.SetBasicAuth("007", "123")
 			},
 			path:          "/foo",
@@ -51,7 +50,7 @@ func Test_middleware_route(t *testing.T) {
 		},
 		"unauthorized": {
 			method: http.MethodGet,
-			modifyRequest: func(req *nethttp.Request) {
+			modifyRequest: func(req *http.Request) {
 				req.SetBasicAuth("007", "006")
 			},
 			path:          "/bar",

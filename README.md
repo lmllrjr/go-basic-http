@@ -1,4 +1,6 @@
 # go-basic-http
+[![Test](https://github.com/lmllrjr/go-basic-http/actions/workflows/test.yaml/badge.svg)](https://github.com/lmllrjr/go-basic-http/actions/workflows/test.yaml)
+
 ## run webworker
 ```sh
 go mod tidy

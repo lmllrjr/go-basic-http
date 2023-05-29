@@ -3,7 +3,6 @@ package http
 import (
 	"io"
 	"net/http"
-	nethttp "net/http"
 	"net/http/httptest"
 	"testing"
 
@@ -12,7 +11,7 @@ import (
 
 func Test_middleware_basicAuth(t *testing.T) {
 	testCases := map[string]struct {
-		modifyRequest func(req *nethttp.Request)
+		modifyRequest func(req *http.Request)
 		method        string
 		path          string
 
@@ -22,7 +21,7 @@ func Test_middleware_basicAuth(t *testing.T) {
 	}{
 		"ok": {
 			method: http.MethodGet,
-			modifyRequest: func(req *nethttp.Request) {
+			modifyRequest: func(req *http.Request) {
 				req.SetBasicAuth("007", "123")
 			},
 			path:          "/foo",
@@ -30,7 +29,7 @@ func Test_middleware_basicAuth(t *testing.T) {
 		},
 		"unauthorized": {
 			method: http.MethodGet,
-			modifyRequest: func(req *nethttp.Request) {
+			modifyRequest: func(req *http.Request) {
 				req.SetBasicAuth("rick sanchez", "wubbalubbadubdub")
 			},
 			path:               "/bar",
@@ -40,7 +39,7 @@ func Test_middleware_basicAuth(t *testing.T) {
 		},
 		"no basic auth": {
 			method: http.MethodGet,
-			modifyRequest: func(req *nethttp.Request) {
+			modifyRequest: func(req *http.Request) {
 			},
 			path:               "/bar",
 			expStatusCode:      http.StatusUnauthorized,
