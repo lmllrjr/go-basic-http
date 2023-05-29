@@ -16,6 +16,7 @@ func NewHandler(
 	routes := []route{
 		newRoute("GET", `/`, HelloWorld(service)),
 		newRoute("GET", `/([^/]+)/([0-9]+)`, TestSlugId),
+		newRoute("GET", `/greet/([^/]+)`, Greet),
 	}
 
 	router := basicAuth(newRouter(routes))
