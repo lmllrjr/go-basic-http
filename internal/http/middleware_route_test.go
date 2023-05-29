@@ -10,11 +10,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_middleware_basicAuth(t *testing.T) {
+func Test_middleware_route(t *testing.T) {
 	testCases := map[string]struct {
 		modifyRequest func(req *nethttp.Request)
 		method        string
 		path          string
+		routes        bool
 
 		expStatusCode      int
 		expWWWAuthenticate string
@@ -26,26 +27,36 @@ func Test_middleware_basicAuth(t *testing.T) {
 				req.SetBasicAuth("007", "123")
 			},
 			path:          "/foo",
+			routes:        true,
 			expStatusCode: http.StatusTeapot,
+		},
+		"method not allowed": {
+			method: http.MethodPut,
+			modifyRequest: func(req *nethttp.Request) {
+				req.SetBasicAuth("007", "123")
+			},
+			path:          "/foo",
+			routes:        true,
+			expStatusCode: http.StatusMethodNotAllowed,
+			expResponse:   "405 method not allowed\n",
+		},
+		"empty routes -> page not found": {
+			method: http.MethodPut,
+			modifyRequest: func(req *nethttp.Request) {
+				req.SetBasicAuth("007", "123")
+			},
+			path:          "/foo",
+			expStatusCode: http.StatusNotFound,
+			expResponse:   "404 page not found\n",
 		},
 		"unauthorized": {
 			method: http.MethodGet,
 			modifyRequest: func(req *nethttp.Request) {
-				req.SetBasicAuth("rick sanchez", "wubbalubbadubdub")
+				req.SetBasicAuth("007", "006")
 			},
-			path:               "/bar",
-			expStatusCode:      http.StatusUnauthorized,
-			expWWWAuthenticate: `Basic Realm="restricted", charset="UTF-8"`,
-			expResponse:        "🚫 YOU SHALL NOT PASS\n",
-		},
-		"no basic auth": {
-			method: http.MethodGet,
-			modifyRequest: func(req *nethttp.Request) {
-			},
-			path:               "/bar",
-			expStatusCode:      http.StatusUnauthorized,
-			expWWWAuthenticate: `Basic Realm="restricted", charset="UTF-8"`,
-			expResponse:        "🚫 YOU SHALL NOT PASS\n",
+			path:          "/bar",
+			routes:        true,
+			expStatusCode: http.StatusUnauthorized,
 		},
 	}
 	for name, tc := range testCases {
@@ -57,9 +68,13 @@ func Test_middleware_basicAuth(t *testing.T) {
 			unauthorized := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				w.WriteHeader(http.StatusUnauthorized)
 			})
-			routes := []route{
-				newRoute("GET", "/foo", teapot),
-				newRoute("GET", "/bar", unauthorized),
+
+			var routes []route
+			if tc.routes {
+				routes = []route{
+					newRoute("GET", "/foo", teapot),
+					newRoute("GET", "/bar", unauthorized),
+				}
 			}
 			router := basicAuth(newRouter(routes))
 
