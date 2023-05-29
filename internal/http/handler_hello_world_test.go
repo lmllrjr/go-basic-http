@@ -9,7 +9,7 @@ import (
 	"os"
 	"testing"
 
-	basichttp "go-basic-http/internal/http"
+	httptransport "go-basic-http/internal/http"
 	svcmock "go-basic-http/internal/service/mock"
 
 	"github.com/stretchr/testify/assert"
@@ -48,7 +48,7 @@ func Test_Handler_HelloWorld(t *testing.T) {
 	}
 	for name, tc := range testCases {
 		t.Run(name, func(t *testing.T) {
-			handler := basichttp.NewHandler(
+			handler := httptransport.NewHandler(
 				tc.service,
 				logger,
 			)

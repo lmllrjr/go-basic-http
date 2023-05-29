@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	basichttp "go-basic-http/internal/http"
+	httptransport "go-basic-http/internal/http"
 	"go-basic-http/internal/utils"
 )
 
@@ -19,7 +19,7 @@ func Webworker() error {
 		logger.Fatal(err)
 	}
 
-	router := basichttp.NewHandler(svc, logger)
+	router := httptransport.NewHandler(svc, logger)
 
 	server := http.Server{
 		Addr:         ":8080",

@@ -8,7 +8,7 @@ import (
 	"os"
 	"testing"
 
-	basichttp "go-basic-http/internal/http"
+	httptransport "go-basic-http/internal/http"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -39,7 +39,7 @@ func Test_Handler_TestSlugID(t *testing.T) {
 	}
 	for name, tc := range testCases {
 		t.Run(name, func(t *testing.T) {
-			handler := basichttp.NewHandler(
+			handler := httptransport.NewHandler(
 				nil,
 				logger,
 			)
